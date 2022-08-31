@@ -46,6 +46,15 @@ namespace Yarn.Unity
             KeyCode,
 
             /// <summary>
+            /// The component is listening for a button to be pressed.
+            /// </summary>
+            /// /// <remarks>
+            /// <para style="info">This input will only be used if the legacy
+            /// Input Manager is enabled.</para>
+            /// </remarks>
+            VirtualButton = 4,
+
+            /// <summary>
             /// The component is listening for the action configured in <see
             /// cref="continueAction"/> to be performed.
             /// </summary>
@@ -53,7 +62,7 @@ namespace Yarn.Unity
             /// <para style="info">This input will only be used if the Input
             /// System is installed and enabled.</para>
             /// </remarks>
-            InputSystemAction,
+            InputSystemAction = 2,
 
             /// <summary>
             /// The component is listening for the action referred to by <see
@@ -96,6 +105,18 @@ namespace Yarn.Unity
         /// </remarks>
         [SerializeField]
         public KeyCode continueActionKeyCode = KeyCode.Space;
+
+        /// <summary>
+        /// The button that this component is listening for.
+        /// </summary>
+        /// <remarks>
+        /// <para style="info">
+        /// This value is only used when <see cref="continueActionType"/> is
+        /// <see cref="ContinueActionType.VirtualButton"/>.
+        /// </para>
+        /// </remarks>
+        [SerializeField]
+        public string continueActionVirtualButton = "Submit";
 
 #if USE_INPUTSYSTEM && ENABLE_INPUT_SYSTEM
         /// <summary>
@@ -221,18 +242,25 @@ namespace Yarn.Unity
 #if ENABLE_LEGACY_INPUT_MANAGER
         internal void Update()
         {
-            // We need to be configured to use a keycode to interrupt/continue
-            // lines.
-            if (continueActionType != ContinueActionType.KeyCode)
+            // if we're using keycodes...
+            if (continueActionType == ContinueActionType.KeyCode)
             {
-                return;
+                // Has the keycode been pressed this frame?
+                if (Input.GetKeyUp(continueActionKeyCode))
+                {
+                    // Indicate that we want to skip/continue.
+                    dialogueView.UserRequestedViewAdvancement();
+                }
             }
-
-            // Has the keycode been pressed this frame?
-            if (Input.GetKeyUp(continueActionKeyCode))
+            // if we're using virtual buttons...
+            else if(continueActionType == ContinueActionType.VirtualButton)
             {
-                // Indicate that we want to skip/continue.
-                dialogueView.UserRequestedViewAdvancement();
+                // Has the button been pressed this frame?
+                if (Input.GetButtonUp(continueActionVirtualButton))
+                {
+                    // Indicate that we want to skip/continue.
+                    dialogueView.UserRequestedViewAdvancement();
+                }
             }
         }
 #endif
