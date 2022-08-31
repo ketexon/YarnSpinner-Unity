@@ -75,6 +75,12 @@ namespace Yarn.Unity
             InputSystemActionFromAsset,
         }
 
+        public enum PressType
+        {
+            Up,
+            Down
+        }
+
         /// <summary>
         /// The dialogue view that will be notified when the user performs the
         /// advance input (as configured by <see cref="continueActionType"/> and
@@ -117,6 +123,9 @@ namespace Yarn.Unity
         /// </remarks>
         [SerializeField]
         public string continueActionVirtualButton = "Submit";
+
+        [SerializeField]
+        public PressType continueActionPressType = PressType.Up;
 
 #if USE_INPUTSYSTEM && ENABLE_INPUT_SYSTEM
         /// <summary>
@@ -246,7 +255,8 @@ namespace Yarn.Unity
             if (continueActionType == ContinueActionType.KeyCode)
             {
                 // Has the keycode been pressed this frame?
-                if (Input.GetKeyUp(continueActionKeyCode))
+                if (Input.GetKeyUp(continueActionKeyCode) && continueActionPressType == PressType.Up
+                    || Input.GetKeyDown(continueActionKeyCode) && continueActionPressType == PressType.Down)
                 {
                     // Indicate that we want to skip/continue.
                     dialogueView.UserRequestedViewAdvancement();
@@ -256,7 +266,8 @@ namespace Yarn.Unity
             else if(continueActionType == ContinueActionType.VirtualButton)
             {
                 // Has the button been pressed this frame?
-                if (Input.GetButtonUp(continueActionVirtualButton))
+                if (Input.GetButtonUp(continueActionVirtualButton) && continueActionPressType == PressType.Up
+                    || Input.GetButtonDown(continueActionVirtualButton) && continueActionPressType == PressType.Down)
                 {
                     // Indicate that we want to skip/continue.
                     dialogueView.UserRequestedViewAdvancement();

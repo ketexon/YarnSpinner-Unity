@@ -28,6 +28,7 @@ namespace Yarn.Unity.Editor
         private SerializedProperty continueActionReferenceProperty;
         private SerializedProperty continueActionProperty;
         private SerializedProperty enableActionOnStartProperty;
+        private SerializedProperty continueActionPressTypeProperty;
 
         public void OnEnable()
         {
@@ -35,6 +36,7 @@ namespace Yarn.Unity.Editor
             continueActionTypeProperty = serializedObject.FindProperty(nameof(DialogueAdvanceInput.continueActionType));
             continueActionKeyCodeProperty = serializedObject.FindProperty(nameof(DialogueAdvanceInput.continueActionKeyCode));
             continueActionVirtualButtonProperty = serializedObject.FindProperty(nameof(DialogueAdvanceInput.continueActionVirtualButton));
+            continueActionPressTypeProperty = serializedObject.FindProperty(nameof(DialogueAdvanceInput.continueActionPressType));
 
 #if USE_INPUTSYSTEM && ENABLE_INPUT_SYSTEM
             continueActionReferenceProperty = serializedObject.FindProperty(nameof(DialogueAdvanceInput.continueActionReference));
@@ -106,6 +108,7 @@ namespace Yarn.Unity.Editor
             EditorGUI.indentLevel += 1;
 #if ENABLE_LEGACY_INPUT_MANAGER
             EditorGUILayout.PropertyField(continueActionKeyCodeProperty);
+            EditorGUILayout.PropertyField(continueActionPressTypeProperty);
 #else
             EditorGUILayout.HelpBox(LegacyInputSystemNotAvailableWarning, MessageType.Warning);
 #endif
@@ -118,6 +121,7 @@ namespace Yarn.Unity.Editor
             EditorGUI.indentLevel += 1;
 #if ENABLE_LEGACY_INPUT_MANAGER
             EditorGUILayout.PropertyField(continueActionVirtualButtonProperty);
+            EditorGUILayout.PropertyField(continueActionPressTypeProperty);
 #else
             EditorGUILayout.HelpBox(LegacyInputSystemNotAvailableWarning, MessageType.Warning);
 #endif
